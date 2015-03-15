@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:orientation="vertical" >
+
+<Button
+    android:id="@+id/btnClick"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Click To Change Time" />
+
+<TextView
+    android:id="@+id/lblTime"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Current Time (H:M): "
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<TextView
+    android:id="@+id/output"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text=""
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<TextView
+    android:id="@+id/debug"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text=""
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+<Button
+    android:id="@+id/btnOff"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentTop="true"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginLeft="80dp"
+    android:layout_marginTop="80dp"
+    android:clickable="true"
+    android:text="Turn LED Off"/>
+<Button
+    android:id="@+id/btnOn"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginLeft="80dp"
+    android:layout_marginTop="80dp"
+    android:clickable="true"
+    android:nestedScrollingEnabled="true"
+    android:text="Turn LED On"
+    android:textColor="#ffff0927"
+    android:theme="@style/AppTheme"/>
+</LinearLayout>
