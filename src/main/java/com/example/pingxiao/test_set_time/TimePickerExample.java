@@ -36,8 +36,8 @@ public class TimePickerExample extends Activity {
     private int minute;
 
     private static final UUID MY_UUID =
-            UUID.fromString("00001101-0000-1000-8000-00805F9B34FC");// whats this
-    private static String address = "D0:E1:40:9C:2D:FB";
+            UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");// whats this
+    private static String address = "20:14:10:15:11:47";
 
     /*PINGXIAO BLUETOOTH MAC ADDRESS: D0:E1:40:9C:2D:FB
      *SNEGHA PHONE NEXUS: 48:59:29:56:12:58
@@ -83,6 +83,7 @@ public class TimePickerExample extends Activity {
                 Log.d(TAG, "...Bluetooth is Enabled");
             } else {
                 //enable the device - dialog for request would appear, waiting for response
+                btAdapter.enable();
                 Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
@@ -113,8 +114,8 @@ public class TimePickerExample extends Activity {
 
     }
 
-    protected void OnResume() {
-        //FIGURE OUT WHY THIS IS NOT CALLED
+    @Override
+    protected void onResume() {
         super.onResume();
         Log.d(TAG, "...In onResume(), attempting client connect...");
         BluetoothConnection();
@@ -131,22 +132,22 @@ public class TimePickerExample extends Activity {
             try {
                 outStream.flush();
             } catch (IOException e) {
-                errorExit("Fatal Error", "In onPause() and failed to flush output stream" + e.getMessage() + ".");
+                errorExit("Fatal Error", "In onPause() and failed to flush output stream: " + e.getMessage() + ".");
             }
         }
 
         try {
             btSocket.close();
         } catch (IOException e2) {
-            errorExit("Fatal Error", "In onPause() and unable to close socket" + e2.getMessage() + ".");
+            errorExit("Fatal Error", "In onPause() and unable to close socket: " + e2.getMessage() + ".");
         }
+
+
     }
 
    private void BluetoothConnection() { //ADD THE FEATURE WHERE THE USER CAN SEARCH WHEN FIRST PAIRING
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
-        String msg = "Hi There";
-        debug.setText(msg);
-        //should I connect as a client or a server?
+        //SHOULD I CONNECT AS A CLIENT OR A SERVER
         try {
             btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
         } catch (IOException e) {
@@ -165,6 +166,7 @@ public class TimePickerExample extends Activity {
         } catch (IOException e) {
             try {
                 btSocket.close();
+                errorExit("Fatal Error", "In BluetoothConnection() and unable to connect socket" + e.getMessage() + ".");
             } catch (IOException e2) {
                 errorExit("Fatal Error", "In BluetoothConnection() and unable to close socket during connection failure" + e2.getMessage() + ".");
             }
@@ -179,16 +181,16 @@ public class TimePickerExample extends Activity {
             //String msg = "We are now right after creating the outstream in THE bluetoothconnection";
             //debug.setText(msg);
         } catch (IOException e) {
-            msg = "We are now right before creating the outstream in THE bluetoothconnection";
+            String msg = "We are now right before creating the outstream in THE bluetoothconnection";
             debug.setText(msg);
             //errorExit("Fatal Error", "In BluetoothConnection() and output stream creation failed" + e.getMessage() + ".");
         }
 
-       //String msg = "We are now right before the bluetooth connection ends";
-       //debug.setText(msg);
+       String msg = "We are now right before the bluetooth connection ends";
+       debug.setText(msg);
     }
 
-    //Do I need onStop and OnDestroy?
+    //DO WE NEED TO HAVE ONDESTROY AND ONSTOP
     private void errorExit(String title, String message) {
         Toast msg = Toast.makeText(getBaseContext(),
                 title + "-" + message, Toast.LENGTH_SHORT);
@@ -202,12 +204,17 @@ public class TimePickerExample extends Activity {
         Log.d(TAG, "...Sending data" + message + "...");
 
         try {
-            outStream.write(msgBuffer);
+            outStream = btSocket.getOutputStream();
         } catch (IOException e) {
-            String msg = "We are now right before OUTSTREAM.WRITE(MSGBUFFER) in THE SENDDATA";
-            debug.setText(msg);
-            String msgG = "In OnCreate and an exception occurred during write" + e.getMessage();
-            errorExit("Fatal Error", msgG);
+            errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
+        }
+
+        try {
+            outStream.write(msgBuffer);
+            //outStream.write(1);
+        } catch (IOException e) {
+            String msg = "In OnCreate and an exception occurred during write" + e.getMessage();
+            errorExit("Fatal Error", msg);
         }
 
     }
