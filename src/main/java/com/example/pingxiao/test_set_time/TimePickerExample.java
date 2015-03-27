@@ -95,7 +95,7 @@ public class TimePickerExample extends Activity {
         btnOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendData("1");
+                sendData("N");
                 Toast msg = Toast.makeText(getBaseContext(),
                         "You have clicked On", Toast.LENGTH_SHORT);
                 msg.show();
@@ -105,7 +105,7 @@ public class TimePickerExample extends Activity {
         btnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendData("0");
+                sendData("F");
                 Toast msg = Toast.makeText(getBaseContext(),
                         "You have clicked Off", Toast.LENGTH_SHORT);
                 msg.show();
@@ -172,19 +172,14 @@ public class TimePickerExample extends Activity {
             }
         }
 
+       Log.d(TAG, "...Creating socket");
 
-        //create a data stream
-        Log.d(TAG, "...Creating socket");
-
-        try {
-            outStream = btSocket.getOutputStream();
-            //String msg = "We are now right after creating the outstream in THE bluetoothconnection";
-            //debug.setText(msg);
-        } catch (IOException e) {
-            String msg = "We are now right before creating the outstream in THE bluetoothconnection";
-            debug.setText(msg);
-            //errorExit("Fatal Error", "In BluetoothConnection() and output stream creation failed" + e.getMessage() + ".");
-        }
+       //create a data stream
+       try {
+           outStream = btSocket.getOutputStream();
+       } catch (IOException e) {
+           errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
+       }
 
        String msg = "We are now right before the bluetooth connection ends";
        debug.setText(msg);
@@ -201,13 +196,18 @@ public class TimePickerExample extends Activity {
     private void sendData(String message) {
         byte[] msgBuffer = message.getBytes();
 
-        Log.d(TAG, "...Sending data" + message + "...");
 
+        Log.d(TAG, "...Creating socket");
+
+        //create a data stream
         try {
             outStream = btSocket.getOutputStream();
         } catch (IOException e) {
             errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
         }
+
+
+        Log.d(TAG, "...Sending data" + message + "...");
 
         try {
             outStream.write(msgBuffer);
@@ -249,18 +249,12 @@ public class TimePickerExample extends Activity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
             hour   = hourOfDay;
             minute = minutes;
+            sendData(""+hour+minute);
             updateTime(hour,minute);
         }
 
     };
 
-    private static String utilTime(int value) {
-
-        if (value < 10)
-            return "0" + String.valueOf(value);
-        else
-            return String.valueOf(value);
-    }
 
     // Used to convert 24hr format to 12hr format with AM/PM values
     private void updateTime(int hours, int mins) {
@@ -289,5 +283,6 @@ public class TimePickerExample extends Activity {
                 .append(minutes).append(" ").append(timeSet).toString();
 
         output.setText(aTime);
+
     }
 }
