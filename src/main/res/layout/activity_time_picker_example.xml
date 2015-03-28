@@ -1,58 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:orientation="vertical" >
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:weightSum="1">
 
-<Button
-    android:id="@+id/btnClick"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Click To Change Time" />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="200dp"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
 
-<TextView
-    android:id="@+id/lblTime"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Current Time (H:M): "
-    android:textAppearance="?android:attr/textAppearanceLarge" />
+        <Button
+            android:id="@+id/btnClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Click To Change Time" />
 
-<TextView
-    android:id="@+id/output"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text=""
-    android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/lblTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Time (H:M): "
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-<TextView
-    android:id="@+id/debug"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text=""
-    android:textAppearance="?android:attr/textAppearanceLarge" />
+        <Button
+            android:id="@+id/btnOn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:nestedScrollingEnabled="true"
+            android:text="Turn LED On"
+            android:textColor="#ffff0927" />
 
-<Button
-    android:id="@+id/btnOff"
-    android:layout_width="100dp"
-    android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_alignParentTop="true"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginLeft="80dp"
-    android:layout_marginTop="80dp"
-    android:clickable="true"
-    android:text="Turn LED Off"/>
-<Button
-    android:id="@+id/btnOn"
-    android:layout_width="100dp"
-    android:layout_height="wrap_content"
-    android:layout_alignParentLeft="true"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginLeft="80dp"
-    android:layout_marginTop="80dp"
-    android:clickable="true"
-    android:nestedScrollingEnabled="true"
-    android:text="Turn LED On"
-    android:textColor="#ffff0927"
-    android:theme="@style/AppTheme"/>
+        <Button
+            android:id="@+id/btnOff"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:text="Turn LED Off" />
+
+        <TextView
+            android:id="@+id/debug"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:text="hiwiwidiwo"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="600dp"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+
+        <TextView
+            android:id="@+id/recordertext"
+            android:layout_width="177dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:text="hiiiiiiiii"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/recordstart"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:clickable="true"
+            android:text="Record" />
+
+        <Button
+            android:id="@+id/recordstop"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:clickable="true"
+            android:text="Stop Recording" />
+
+        <Button
+            android:id="@+id/recordplay"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:clickable="true"
+            android:text="Play" />
+
+        <Button
+            android:id="@+id/recordstopplay"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:clickable="true"
+            android:text="Stop Playing" />
+
+    </LinearLayout>
 </LinearLayout>

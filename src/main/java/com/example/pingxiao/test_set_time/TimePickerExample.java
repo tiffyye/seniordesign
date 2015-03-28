@@ -2,6 +2,9 @@ package com.example.pingxiao.test_set_time;
 
 import java.util.Calendar;
 import android.app.Activity;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -44,22 +47,27 @@ public class TimePickerExample extends Activity {
      * HC-06: 20:14:10:15:11:47
      */
 
-    //USE BLUESTEM TO CHECK FOR BLUETOOTH
-
     private static final int REQUEST_ENABLE_BT = 1;
     private static final String TAG = "LEDOnOff";
-
 
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private OutputStream outStream = null;
+
+    private MediaRecorder myRecorder;
+    private MediaPlayer myPlayer;
+    private String outputFile = null;
+    private Button startBtn;
+    private Button stopBtn;
+    private Button playBtn;
+    private Button stopPlayBtn;
+    private TextView recordertext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_picker_example);
 
-        output = (TextView) findViewById(R.id.output);
         debug = (TextView) findViewById(R.id.debug);
         final Calendar c = Calendar.getInstance();
         hour = c.get(Calendar.HOUR_OF_DAY);
@@ -112,6 +120,49 @@ public class TimePickerExample extends Activity {
             }
         });
 
+        recordertext = (TextView) findViewById(R.id.recordertext);
+
+    //STORE IT TO SOMEWHERE?
+    //PUT A TIME LIMIT TO THIS
+        //outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + ""; this is for sd card
+        outputFile = getFilesDir()+"/audio.3gp";
+        myRecorder = new MediaRecorder();
+        myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myRecorder.setOutputFile(outputFile);
+
+        startBtn = (Button)findViewById(R.id.recordstart);
+        startBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                start(v);
+            }
+        });
+
+        stopBtn = (Button)findViewById(R.id.recordstop);
+        stopBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stop(v);
+            }
+        });
+
+        playBtn = (Button)findViewById(R.id.recordplay);
+        startBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                play(v);
+            }
+        });
+
+        stopPlayBtn = (Button)findViewById(R.id.recordstopplay);
+        startBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopPlay(v);
+            }
+        });
+
+
     }
 
     @Override
@@ -142,6 +193,15 @@ public class TimePickerExample extends Activity {
             errorExit("Fatal Error", "In onPause() and unable to close socket: " + e2.getMessage() + ".");
         }
 
+        if (myRecorder != null) {
+            myRecorder.release();
+            myRecorder = null;
+        }
+
+        if (myPlayer != null) {
+            myPlayer.release();
+            myPlayer = null;
+        }
 
     }
 
@@ -156,8 +216,6 @@ public class TimePickerExample extends Activity {
         }
 
         btAdapter.cancelDiscovery();
-
-
 
         //establish connection
         Log.d(TAG, "...Connecting remote");
@@ -183,6 +241,77 @@ public class TimePickerExample extends Activity {
 
        String msg = "We are now right before the bluetooth connection ends";
        debug.setText(msg);
+    }
+
+    public void start(View view){
+       try{
+           myRecorder.prepare();
+           myRecorder.start();
+       } catch (IllegalStateException e){
+           errorExit("Fatal Error", "Recording start failed: " + e.getMessage() + ".");
+       } catch (IOException e2) {
+           errorExit("Fatal Error", "Recording start failed: " + e2.getMessage() + ".");
+       }
+
+        recordertext.setText("Recording");
+        startBtn.setEnabled(false);
+        stopBtn.setEnabled(true);
+
+        Toast.makeText(getApplicationContext(), "Start recording...",
+                    Toast.LENGTH_SHORT).show();
+    }
+
+    public void stop(View view){
+        try{
+            myRecorder.stop();
+            myRecorder.release();
+            myRecorder = null;
+        } catch (IllegalStateException e){
+            errorExit("Fatal Error", "Recording stop failed: " + e.getMessage() + ".");
+        } catch (RuntimeException e2) {
+            errorExit("Fatal Error", "Recording stop failed: " + e2.getMessage() + ".");
+        }
+            stopBtn.setEnabled(false);
+            playBtn.setEnabled(true);
+
+            recordertext.setText("Stop");
+
+            Toast.makeText(getApplicationContext(), "Sop recording...",
+                    Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void play(View view){
+        try{
+            myPlayer = new MediaPlayer();
+            myPlayer.setDataSource(outputFile);
+            myPlayer.prepare();
+            myPlayer.start();
+
+            playBtn.setEnabled(false);
+            stopPlayBtn.setEnabled(true);
+            recordertext.setText("Playing");
+        } catch (Exception e) {
+            errorExit("Fatal Error", "Playing failed: " + e.getMessage() + ".");
+        }
+
+    }
+
+    public void stopPlay(View view){
+        try{
+            if(myPlayer != null) {
+                myPlayer.stop();
+                myPlayer.release();
+                myPlayer = null;
+                playBtn.setEnabled(true);
+                stopPlayBtn.setEnabled(false);
+                recordertext.setText("Stop Playing");
+                Toast.makeText(getApplicationContext(), "Stop playing the recording...",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            errorExit("Fatal Error", "Stop Playing failed: " + e.getMessage() + ".");
+        }
     }
 
     //DO WE NEED TO HAVE ONDESTROY AND ONSTOP
@@ -218,6 +347,8 @@ public class TimePickerExample extends Activity {
         }
 
     }
+
+
 
 
     public void addButtonClickListener() {
