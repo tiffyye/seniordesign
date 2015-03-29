@@ -1,5 +1,9 @@
 package com.example.pingxiao.test_set_time;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -225,43 +229,51 @@ public class TimePickerExample extends Activity {
 
     }
 
-    private void BluetoothConnection() { //ADD THE FEATURE WHERE THE USER CAN SEARCH WHEN FIRST PAIRING
-        BluetoothDevice device = btAdapter.getRemoteDevice(address);
-        //SHOULD I CONNECT AS A CLIENT OR A SERVER
-        try {
-            btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
-        } catch (IOException e) {
-            btSocket = null;
-            errorExit("Fatal Error", "In BluetoothConnection() and socket create failed: " + e.getMessage() + ".");
-        }
+    private void sendAudioData(){
+        //NEED TO TEST
+        File audiofile = new File(getFilesDir(), "/audio.3gp");
+        byte[] finalAudioByteArray = null;
 
-        btAdapter.cancelDiscovery();
+        if(audiofile.exists())
+        {
+          try {
+              InputStream input_stream = new BufferedInputStream(new FileInputStream(audiofile));
+              ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+              byte[] data = new byte[1024*16]; // 16K
+              int bytes_read;
+              while ((bytes_read = input_stream.read(data, 0, data.length)) != -1) {
+                  buffer.write(data, 0, bytes_read);
+              }
+              input_stream.close();
+              finalAudioByteArray = buffer.toByteArray();
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
 
-        //establish connection
-        Log.d(TAG, "...Connecting remote");
-        try {
-            btSocket.connect();
-        } catch (IOException e) {
             try {
-                btSocket.close();
-                errorExit("Fatal Error", "In BluetoothConnection() and unable to connect socket" + e.getMessage() + ".");
-            } catch (IOException e2) {
-                errorExit("Fatal Error", "In BluetoothConnection() and unable to close socket during connection failure" + e2.getMessage() + ".");
+                outStream = btSocket.getOutputStream();
+            } catch (IOException e) {
+                errorExit("Fatal Error", "In sendAudioData() and output stream creation failed" + e.getMessage() + ".");
             }
+
+
+            Log.d(TAG, "...Sending audio data...");
+
+            try {
+                outStream.write(finalAudioByteArray);
+            } catch (IOException e) {
+                String msg = "In sendAudioData() and an exception occurred during write" + e.getMessage();
+                errorExit("Fatal Error", msg);
+            }
+
+
         }
 
-        Log.d(TAG, "...Creating socket");
 
-        //create a data stream
-        try {
-            outStream = btSocket.getOutputStream();
-        } catch (IOException e) {
-            errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
-        }
-
-        // String msg = "We are now right before the bluetooth connection ends";
-        // debug.setText(msg);
     }
+
+
+
 
     private void setUpAudio(){
         outputFile = getFilesDir() + "/audio.3gp";
@@ -385,6 +397,44 @@ public class TimePickerExample extends Activity {
                 title + "-" + message, Toast.LENGTH_SHORT);
         msg.show();
         finish();
+    }
+
+    private void BluetoothConnection() { //ADD THE FEATURE WHERE THE USER CAN SEARCH WHEN FIRST PAIRING
+        BluetoothDevice device = btAdapter.getRemoteDevice(address);
+        //SHOULD I CONNECT AS A CLIENT OR A SERVER
+        try {
+            btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+        } catch (IOException e) {
+            btSocket = null;
+            errorExit("Fatal Error", "In BluetoothConnection() and socket create failed: " + e.getMessage() + ".");
+        }
+
+        btAdapter.cancelDiscovery();
+
+        //establish connection
+        Log.d(TAG, "...Connecting remote");
+        try {
+            btSocket.connect();
+        } catch (IOException e) {
+            try {
+                btSocket.close();
+                errorExit("Fatal Error", "In BluetoothConnection() and unable to connect socket" + e.getMessage() + ".");
+            } catch (IOException e2) {
+                errorExit("Fatal Error", "In BluetoothConnection() and unable to close socket during connection failure" + e2.getMessage() + ".");
+            }
+        }
+
+        Log.d(TAG, "...Creating socket");
+
+        //create a data stream
+        try {
+            outStream = btSocket.getOutputStream();
+        } catch (IOException e) {
+            errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
+        }
+
+        // String msg = "We are now right before the bluetooth connection ends";
+        // debug.setText(msg);
     }
 
     private void sendData(String message) {
