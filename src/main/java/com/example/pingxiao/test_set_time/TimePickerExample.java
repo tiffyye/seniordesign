@@ -1,10 +1,10 @@
 package com.example.pingxiao.test_set_time;
 
 import java.util.Calendar;
+
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,6 +21,7 @@ import android.bluetooth.BluetoothSocket;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
+
 import android.util.Log;
 import android.content.Intent;
 import android.widget.Toast;
@@ -68,6 +69,7 @@ public class TimePickerExample extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_picker_example);
 
+        output = (TextView) findViewById(R.id.output);
         debug = (TextView) findViewById(R.id.debug);
         final Calendar c = Calendar.getInstance();
         hour = c.get(Calendar.HOUR_OF_DAY);
@@ -81,7 +83,7 @@ public class TimePickerExample extends Activity {
         btnOff = (Button) findViewById(R.id.btnOff);
 
         //get the bluetooth adapter for host device -> the tablet
-       btAdapter = BluetoothAdapter.getDefaultAdapter();
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //check if it exists
         if (btAdapter == null) {
@@ -122,40 +124,44 @@ public class TimePickerExample extends Activity {
 
         recordertext = (TextView) findViewById(R.id.recordertext);
 
-    //STORE IT TO SOMEWHERE?
-    //PUT A TIME LIMIT TO THIS
+        //STORE IT TO SOMEWHERE?
+        //PUT A TIME LIMIT TO THIS
         //outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + ""; this is for sd card
-        outputFile = getFilesDir()+"/audio.3gp";
+        outputFile = getFilesDir() + "/audio.3gp";
         myRecorder = new MediaRecorder();
+        myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         myRecorder.setOutputFile(outputFile);
 
-        startBtn = (Button)findViewById(R.id.recordstart);
-        startBtn.setOnClickListener(new OnClickListener() {
+        startBtn = (Button) findViewById(R.id.recordstart);
+        startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String msg = "We are now STARTING to record...";
+                debug.setText(msg);
                 start(v);
             }
         });
 
-        stopBtn = (Button)findViewById(R.id.recordstop);
-        stopBtn.setOnClickListener(new OnClickListener() {
+        stopBtn = (Button) findViewById(R.id.recordstop);
+        stopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stop(v);
             }
         });
 
-        playBtn = (Button)findViewById(R.id.recordplay);
-        startBtn.setOnClickListener(new OnClickListener() {
+        playBtn = (Button) findViewById(R.id.recordplay);
+        startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 play(v);
             }
         });
 
-        stopPlayBtn = (Button)findViewById(R.id.recordstopplay);
-        startBtn.setOnClickListener(new OnClickListener() {
+        stopPlayBtn = (Button) findViewById(R.id.recordstopplay);
+        startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stopPlay(v);
@@ -205,7 +211,7 @@ public class TimePickerExample extends Activity {
 
     }
 
-   private void BluetoothConnection() { //ADD THE FEATURE WHERE THE USER CAN SEARCH WHEN FIRST PAIRING
+    private void BluetoothConnection() { //ADD THE FEATURE WHERE THE USER CAN SEARCH WHEN FIRST PAIRING
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
         //SHOULD I CONNECT AS A CLIENT OR A SERVER
         try {
@@ -230,59 +236,61 @@ public class TimePickerExample extends Activity {
             }
         }
 
-       Log.d(TAG, "...Creating socket");
+        Log.d(TAG, "...Creating socket");
 
-       //create a data stream
-       try {
-           outStream = btSocket.getOutputStream();
-       } catch (IOException e) {
-           errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
-       }
+        //create a data stream
+        try {
+            outStream = btSocket.getOutputStream();
+        } catch (IOException e) {
+            errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
+        }
 
-       String msg = "We are now right before the bluetooth connection ends";
-       debug.setText(msg);
+        String msg = "We are now right before the bluetooth connection ends";
+        debug.setText(msg);
     }
 
-    public void start(View view){
-       try{
-           myRecorder.prepare();
-           myRecorder.start();
-       } catch (IllegalStateException e){
-           errorExit("Fatal Error", "Recording start failed: " + e.getMessage() + ".");
-       } catch (IOException e2) {
-           errorExit("Fatal Error", "Recording start failed: " + e2.getMessage() + ".");
-       }
+    private void start(View view) {
+        try {
+
+            myRecorder.prepare();
+            myRecorder.start();
+
+        } catch (IllegalStateException e) {
+            errorExit("Fatal Error", "Recording start failed: " + e.getMessage() + ".");
+        } catch (IOException e2) {
+            errorExit("Fatal Error", "Recording start failed: " + e2.getMessage() + ".");
+        }
 
         recordertext.setText("Recording");
         startBtn.setEnabled(false);
         stopBtn.setEnabled(true);
 
         Toast.makeText(getApplicationContext(), "Start recording...",
-                    Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_SHORT).show();
     }
 
-    public void stop(View view){
-        try{
+    private void stop(View view) {
+        try {
             myRecorder.stop();
             myRecorder.release();
             myRecorder = null;
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             errorExit("Fatal Error", "Recording stop failed: " + e.getMessage() + ".");
         } catch (RuntimeException e2) {
             errorExit("Fatal Error", "Recording stop failed: " + e2.getMessage() + ".");
         }
-            stopBtn.setEnabled(false);
-            playBtn.setEnabled(true);
+        stopBtn.setEnabled(false);
+        playBtn.setEnabled(true);
 
-            recordertext.setText("Stop");
+        recordertext.setText("Stop");
 
-            Toast.makeText(getApplicationContext(), "Sop recording...",
-                    Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Sop recording...",
+                Toast.LENGTH_SHORT).show();
 
     }
 
-    public void play(View view){
-        try{
+    private void play(View view) {
+        try {
             myPlayer = new MediaPlayer();
             myPlayer.setDataSource(outputFile);
             myPlayer.prepare();
@@ -297,9 +305,9 @@ public class TimePickerExample extends Activity {
 
     }
 
-    public void stopPlay(View view){
-        try{
-            if(myPlayer != null) {
+    private void stopPlay(View view) {
+        try {
+            if (myPlayer != null) {
                 myPlayer.stop();
                 myPlayer.release();
                 myPlayer = null;
@@ -349,8 +357,6 @@ public class TimePickerExample extends Activity {
     }
 
 
-
-
     public void addButtonClickListener() {
 
         btnClick = (Button) findViewById(R.id.btnClick);
@@ -378,10 +384,10 @@ public class TimePickerExample extends Activity {
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
-            hour   = hourOfDay;
+            hour = hourOfDay;
             minute = minutes;
-            sendData(""+hour+minute);
-            updateTime(hour,minute);
+            sendData("" + hour + minute);
+            updateTime(hour, minute);
         }
 
     };

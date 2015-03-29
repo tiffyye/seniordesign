@@ -63,6 +63,13 @@
         android:orientation="vertical"
         android:weightSum="1">
 
+        <TextView
+            android:id="@+id/output"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
 
         <TextView
             android:id="@+id/recordertext"
