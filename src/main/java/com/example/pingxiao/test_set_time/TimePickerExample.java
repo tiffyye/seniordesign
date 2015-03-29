@@ -31,8 +31,6 @@ import android.util.Log;
 import android.content.Intent;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 public class TimePickerExample extends Activity {
 
     static final int TIME_DIALOG_ID = 1111;
@@ -88,17 +86,14 @@ public class TimePickerExample extends Activity {
         btnOn = (Button) findViewById(R.id.btnOn);
         btnOff = (Button) findViewById(R.id.btnOff);
 
-        //get the bluetooth adapter for host device -> the tablet
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        //check if it exists
         if (btAdapter == null) {
             errorExit("Fatal Error", "Bluetooth Not Supported. Aborting.");
         } else {
             if (btAdapter.isEnabled()) {
                 Log.d(TAG, "...Bluetooth is Enabled");
             } else {
-                //enable the device - dialog for request would appear, waiting for response
                 btAdapter.enable();
                 Intent enableBtIntent = new Intent(btAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
@@ -107,7 +102,6 @@ public class TimePickerExample extends Activity {
 
         //Update: BluetoothConnection() this would be placed in OnResume()
 
-        //define actions of the two buttons
         btnOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,8 +122,6 @@ public class TimePickerExample extends Activity {
             }
         });
 
-
-        //STORE IT TO SOMEWHERE?
         //PUT A TIME LIMIT TO THIS
         //outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + ""; this is for sd card
         text = (TextView) findViewById(R.id.textoutput);
@@ -239,7 +231,7 @@ public class TimePickerExample extends Activity {
           try {
               InputStream input_stream = new BufferedInputStream(new FileInputStream(audiofile));
               ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-              byte[] data = new byte[1024*16]; // 16K
+              byte[] data = new byte[1024*16]; // 16K WHAT IF WE HAVE A REALLY BIG SIZE
               int bytes_read;
               while ((bytes_read = input_stream.read(data, 0, data.length)) != -1) {
                   buffer.write(data, 0, bytes_read);
@@ -401,7 +393,6 @@ public class TimePickerExample extends Activity {
 
     private void BluetoothConnection() { //ADD THE FEATURE WHERE THE USER CAN SEARCH WHEN FIRST PAIRING
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
-        //SHOULD I CONNECT AS A CLIENT OR A SERVER
         try {
             btSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
         } catch (IOException e) {
@@ -411,7 +402,6 @@ public class TimePickerExample extends Activity {
 
         btAdapter.cancelDiscovery();
 
-        //establish connection
         Log.d(TAG, "...Connecting remote");
         try {
             btSocket.connect();
@@ -426,7 +416,6 @@ public class TimePickerExample extends Activity {
 
         Log.d(TAG, "...Creating socket");
 
-        //create a data stream
         try {
             outStream = btSocket.getOutputStream();
         } catch (IOException e) {
@@ -443,7 +432,6 @@ public class TimePickerExample extends Activity {
 
         Log.d(TAG, "...Creating socket");
 
-        //create a data stream
         try {
             outStream = btSocket.getOutputStream();
         } catch (IOException e) {
@@ -480,7 +468,6 @@ public class TimePickerExample extends Activity {
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case TIME_DIALOG_ID:
-                // set time picker as current time
                 return new TimePickerDialog(this, timePickerListener, hour, minute,
                         false);
         }
@@ -499,8 +486,6 @@ public class TimePickerExample extends Activity {
 
     };
 
-
-    // Used to convert 24hr format to 12hr format with AM/PM values
     private void updateTime(int hours, int mins) {
 
         String timeSet = "";
@@ -522,7 +507,6 @@ public class TimePickerExample extends Activity {
         else
             minutes = String.valueOf(mins);
 
-        // Append in a StringBuilder
         String aTime = new StringBuilder().append(hours).append(':')
                 .append(minutes).append(" ").append(timeSet).toString();
 
