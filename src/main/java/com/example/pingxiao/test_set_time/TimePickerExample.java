@@ -20,6 +20,7 @@ import android.bluetooth.BluetoothSocket;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.File;
 import java.util.UUID;
 
 import android.util.Log;
@@ -62,6 +63,7 @@ public class TimePickerExample extends Activity {
     private Button stopBtn;
     private Button playBtn;
     private Button stopPlayBtn;
+    //private Button deleteMsgBtn;
     private TextView text;
 
     @Override
@@ -123,20 +125,14 @@ public class TimePickerExample extends Activity {
         });
 
 
-
         //STORE IT TO SOMEWHERE?
         //PUT A TIME LIMIT TO THIS
         //outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + ""; this is for sd card
         text = (TextView) findViewById(R.id.textoutput);
 
-        outputFile = getFilesDir() + "/audio.3gp";
-        myRecorder = new MediaRecorder();
-        myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        myRecorder.setOutputFile(outputFile);
 
-        startBtn = (Button)findViewById(R.id.start);
+
+        startBtn = (Button) findViewById(R.id.start);
 
         startBtn.setOnClickListener(new OnClickListener() {
 
@@ -147,7 +143,7 @@ public class TimePickerExample extends Activity {
             }
         });
 
-        stopBtn = (Button)findViewById(R.id.stop);
+        stopBtn = (Button) findViewById(R.id.stop);
         stopBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -157,7 +153,7 @@ public class TimePickerExample extends Activity {
             }
         });
 
-        playBtn = (Button)findViewById(R.id.play);
+        playBtn = (Button) findViewById(R.id.play);
         playBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -167,7 +163,7 @@ public class TimePickerExample extends Activity {
             }
         });
 
-        stopPlayBtn = (Button)findViewById(R.id.stopPlay);
+        stopPlayBtn = (Button) findViewById(R.id.stopPlay);
         stopPlayBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -176,6 +172,16 @@ public class TimePickerExample extends Activity {
                 stopPlay(v);
             }
         });
+
+        /*deleteMsgBtn = (Button) findViewById(R.id.deleteMsg);
+        deleteMsgBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                deleteMsg(v);
+            }
+        });*/
 
     }
 
@@ -253,12 +259,22 @@ public class TimePickerExample extends Activity {
             errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
         }
 
-       // String msg = "We are now right before the bluetooth connection ends";
-       // debug.setText(msg);
+        // String msg = "We are now right before the bluetooth connection ends";
+        // debug.setText(msg);
     }
 
-    public void start(View view){
+    private void setUpAudio(){
+        outputFile = getFilesDir() + "/audio.3gp";
+        myRecorder = new MediaRecorder();
+        myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        myRecorder.setOutputFile(outputFile);
+    }
+
+    public void start(View view) {
         try {
+            setUpAudio();
             myRecorder.prepare();
             myRecorder.start();
         } catch (IllegalStateException e) {
@@ -271,20 +287,26 @@ public class TimePickerExample extends Activity {
         text.setText("Recording Point: Recording");
         startBtn.setEnabled(false);
         stopBtn.setEnabled(true);
+        playBtn.setEnabled(false);
+        stopPlayBtn.setEnabled(false);
 
         Toast.makeText(getApplicationContext(), "Start recording...",
                 Toast.LENGTH_SHORT).show();
-        //record message memory??
+        //MEMORY ISSUE??
     }
 
-    public void stop(View view){
+    public void stop(View view) {
         try {
             myRecorder.stop();
             myRecorder.release();
-            myRecorder  = null;
+            myRecorder = null;
+            //this is for re-recording
 
             stopBtn.setEnabled(false);
             playBtn.setEnabled(true);
+            startBtn.setEnabled(true);
+            stopPlayBtn.setEnabled(false);
+            //deleteMsgBtn.setEnabled(true);
             text.setText("Recording Point: Stop recording");
 
             Toast.makeText(getApplicationContext(), "Stop recording...",
@@ -297,7 +319,7 @@ public class TimePickerExample extends Activity {
     }
 
     public void play(View view) {
-        try{
+        try {
             myPlayer = new MediaPlayer();
             myPlayer.setDataSource(outputFile);
             myPlayer.prepare();
@@ -305,6 +327,9 @@ public class TimePickerExample extends Activity {
 
             playBtn.setEnabled(false);
             stopPlayBtn.setEnabled(true);
+            stopBtn.setEnabled(false);
+            startBtn.setEnabled(false);
+            //deleteMsgBtn.setEnabled(false);
             text.setText("Recording Point: Playing");
 
             Toast.makeText(getApplicationContext(), "Start play the recording...",
@@ -321,8 +346,12 @@ public class TimePickerExample extends Activity {
                 myPlayer.stop();
                 myPlayer.release();
                 myPlayer = null;
+
                 playBtn.setEnabled(true);
                 stopPlayBtn.setEnabled(false);
+                stopBtn.setEnabled(false);
+                startBtn.setEnabled(true);
+
                 text.setText("Recording Point: Stop playing");
 
                 Toast.makeText(getApplicationContext(), "Stop playing the recording...",
@@ -333,6 +362,22 @@ public class TimePickerExample extends Activity {
             e.printStackTrace();
         }
     }
+
+    /*public void deleteMsg(View view) {
+
+        try {
+            File file = new File(getFilesDir(), "audio.3gp");
+            boolean deleted = file.delete();
+            playBtn.setEnabled(false);
+            stopPlayBtn.setEnabled(false);
+            startBtn.setEnabled(true;
+            stopBtn.setEnabled(false);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }*/
 
     //DO WE NEED TO HAVE ONDESTROY AND ONSTOP
     private void errorExit(String title, String message) {
