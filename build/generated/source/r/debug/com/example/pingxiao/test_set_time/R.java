@@ -1314,7 +1314,7 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09002f;
         public static final int action_mode_bar_stub=0x7f09002e;
         public static final int action_mode_close_button=0x7f090021;
-        public static final int action_settings=0x7f09004a;
+        public static final int action_settings=0x7f09004b;
         public static final int activity_chooser_view_content=0x7f090022;
         public static final int always=0x7f090017;
         public static final int beginning=0x7f090014;
@@ -1346,14 +1346,11 @@ containing a value of this type.
         public static final int none=0x7f09000f;
         public static final int normal=0x7f09000b;
         public static final int output=0x7f090045;
+        public static final int play=0x7f090049;
         public static final int progress_circular=0x7f090005;
         public static final int progress_horizontal=0x7f090006;
         public static final int radio=0x7f09002c;
         public static final int recordertext=0x7f090007;
-        public static final int recordplay=0x7f090048;
-        public static final int recordstart=0x7f090046;
-        public static final int recordstop=0x7f090047;
-        public static final int recordstopplay=0x7f090049;
         public static final int search_badge=0x7f090036;
         public static final int search_bar=0x7f090035;
         public static final int search_button=0x7f090037;
@@ -1369,8 +1366,12 @@ containing a value of this type.
         public static final int showHome=0x7f090011;
         public static final int showTitle=0x7f090012;
         public static final int split_action_bar=0x7f090008;
+        public static final int start=0x7f090047;
+        public static final int stop=0x7f090048;
+        public static final int stopPlay=0x7f09004a;
         public static final int submit_area=0x7f09003d;
         public static final int tabMode=0x7f09000c;
+        public static final int textoutput=0x7f090046;
         public static final int title=0x7f090028;
         public static final int up=0x7f090009;
         public static final int useLogo=0x7f090013;

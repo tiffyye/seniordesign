@@ -62,7 +62,7 @@ public class TimePickerExample extends Activity {
     private Button stopBtn;
     private Button playBtn;
     private Button stopPlayBtn;
-    private TextView recordertext;
+    private TextView text;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,11 +122,13 @@ public class TimePickerExample extends Activity {
             }
         });
 
-        recordertext = (TextView) findViewById(R.id.recordertext);
+
 
         //STORE IT TO SOMEWHERE?
         //PUT A TIME LIMIT TO THIS
         //outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + ""; this is for sd card
+        text = (TextView) findViewById(R.id.textoutput);
+
         outputFile = getFilesDir() + "/audio.3gp";
         myRecorder = new MediaRecorder();
         myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -134,40 +136,46 @@ public class TimePickerExample extends Activity {
         myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         myRecorder.setOutputFile(outputFile);
 
-        startBtn = (Button) findViewById(R.id.recordstart);
-        startBtn.setOnClickListener(new View.OnClickListener() {
+        startBtn = (Button)findViewById(R.id.start);
+
+        startBtn.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                String msg = "We are now STARTING to record...";
-                debug.setText(msg);
+
                 start(v);
             }
         });
 
-        stopBtn = (Button) findViewById(R.id.recordstop);
-        stopBtn.setOnClickListener(new View.OnClickListener() {
+        stopBtn = (Button)findViewById(R.id.stop);
+        stopBtn.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 stop(v);
             }
         });
 
-        playBtn = (Button) findViewById(R.id.recordplay);
-        startBtn.setOnClickListener(new View.OnClickListener() {
+        playBtn = (Button)findViewById(R.id.play);
+        playBtn.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 play(v);
             }
         });
 
-        stopPlayBtn = (Button) findViewById(R.id.recordstopplay);
-        startBtn.setOnClickListener(new View.OnClickListener() {
+        stopPlayBtn = (Button)findViewById(R.id.stopPlay);
+        stopPlayBtn.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
                 stopPlay(v);
             }
         });
-
 
     }
 
@@ -245,52 +253,51 @@ public class TimePickerExample extends Activity {
             errorExit("Fatal Error", "In sendData() and output stream creation failed" + e.getMessage() + ".");
         }
 
-        String msg = "We are now right before the bluetooth connection ends";
-        debug.setText(msg);
+       // String msg = "We are now right before the bluetooth connection ends";
+       // debug.setText(msg);
     }
 
-    private void start(View view) {
+    public void start(View view){
         try {
-
             myRecorder.prepare();
             myRecorder.start();
-
         } catch (IllegalStateException e) {
-            errorExit("Fatal Error", "Recording start failed: " + e.getMessage() + ".");
-        } catch (IOException e2) {
-            errorExit("Fatal Error", "Recording start failed: " + e2.getMessage() + ".");
+            e.printStackTrace();
+        } catch (IOException e) {
+
+            e.printStackTrace();
         }
 
-        recordertext.setText("Recording");
+        text.setText("Recording Point: Recording");
         startBtn.setEnabled(false);
         stopBtn.setEnabled(true);
 
         Toast.makeText(getApplicationContext(), "Start recording...",
                 Toast.LENGTH_SHORT).show();
+        //record message memory??
     }
 
-    private void stop(View view) {
+    public void stop(View view){
         try {
             myRecorder.stop();
             myRecorder.release();
-            myRecorder = null;
+            myRecorder  = null;
+
+            stopBtn.setEnabled(false);
+            playBtn.setEnabled(true);
+            text.setText("Recording Point: Stop recording");
+
+            Toast.makeText(getApplicationContext(), "Stop recording...",
+                    Toast.LENGTH_SHORT).show();
         } catch (IllegalStateException e) {
-            errorExit("Fatal Error", "Recording stop failed: " + e.getMessage() + ".");
-        } catch (RuntimeException e2) {
-            errorExit("Fatal Error", "Recording stop failed: " + e2.getMessage() + ".");
+            e.printStackTrace();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
-        stopBtn.setEnabled(false);
-        playBtn.setEnabled(true);
-
-        recordertext.setText("Stop");
-
-        Toast.makeText(getApplicationContext(), "Sop recording...",
-                Toast.LENGTH_SHORT).show();
-
     }
 
-    private void play(View view) {
-        try {
+    public void play(View view) {
+        try{
             myPlayer = new MediaPlayer();
             myPlayer.setDataSource(outputFile);
             myPlayer.prepare();
@@ -298,14 +305,17 @@ public class TimePickerExample extends Activity {
 
             playBtn.setEnabled(false);
             stopPlayBtn.setEnabled(true);
-            recordertext.setText("Playing");
-        } catch (Exception e) {
-            errorExit("Fatal Error", "Playing failed: " + e.getMessage() + ".");
-        }
+            text.setText("Recording Point: Playing");
 
+            Toast.makeText(getApplicationContext(), "Start play the recording...",
+                    Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
-    private void stopPlay(View view) {
+    public void stopPlay(View view) {
         try {
             if (myPlayer != null) {
                 myPlayer.stop();
@@ -313,12 +323,14 @@ public class TimePickerExample extends Activity {
                 myPlayer = null;
                 playBtn.setEnabled(true);
                 stopPlayBtn.setEnabled(false);
-                recordertext.setText("Stop Playing");
+                text.setText("Recording Point: Stop playing");
+
                 Toast.makeText(getApplicationContext(), "Stop playing the recording...",
                         Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            errorExit("Fatal Error", "Stop Playing failed: " + e.getMessage() + ".");
+
+            e.printStackTrace();
         }
     }
 
