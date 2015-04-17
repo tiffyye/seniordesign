@@ -65,6 +65,7 @@ public class TimePickerExample extends Activity {
     private Button stopBtn;
     private Button playBtn;
     private Button stopPlayBtn;
+    private Button sendAudioBtn;
     //private Button deleteMsgBtn;
     private TextView text;
 
@@ -169,6 +170,16 @@ public class TimePickerExample extends Activity {
             }
         });
 
+        sendAudioBtn = (Button) findViewById(R.id.sendAudio);
+        stopPlayBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                sendAudio(v);
+            }
+        });
+
         /*deleteMsgBtn = (Button) findViewById(R.id.deleteMsg);
         deleteMsgBtn.setOnClickListener(new OnClickListener() {
 
@@ -180,7 +191,6 @@ public class TimePickerExample extends Activity {
         });*/
 
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -188,7 +198,6 @@ public class TimePickerExample extends Activity {
         BluetoothConnection();
         //Note: Before you click on any buttons, this part would be ready already (datastream is ready)
     }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -264,9 +273,6 @@ public class TimePickerExample extends Activity {
 
     }
 
-
-
-
     private void setUpAudio(){
         outputFile = getFilesDir() + "/audio.3gp";
         myRecorder = new MediaRecorder();
@@ -275,6 +281,26 @@ public class TimePickerExample extends Activity {
         myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         myRecorder.setOutputFile(outputFile);
     }
+
+    public void sendAudio(View view) {
+        try {
+        sendAudioData();
+
+        text.setText("Recording Point: Sending Audio now...");
+        startBtn.setEnabled(true);
+        stopBtn.setEnabled(false);
+        playBtn.setEnabled(true);
+        stopPlayBtn.setEnabled(false);
+
+        Toast.makeText(getApplicationContext(), "Send Audio data...",
+                Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void start(View view) {
         try {
@@ -366,23 +392,6 @@ public class TimePickerExample extends Activity {
             e.printStackTrace();
         }
     }
-
-    /*public void deleteMsg(View view) {
-
-        try {
-            File file = new File(getFilesDir(), "audio.3gp");
-            boolean deleted = file.delete();
-            playBtn.setEnabled(false);
-            stopPlayBtn.setEnabled(false);
-            startBtn.setEnabled(true;
-            stopBtn.setEnabled(false);
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }*/
-
     //DO WE NEED TO HAVE ONDESTROY AND ONSTOP
     private void errorExit(String title, String message) {
         Toast msg = Toast.makeText(getBaseContext(),
@@ -451,7 +460,6 @@ public class TimePickerExample extends Activity {
 
     }
 
-
     public void addButtonClickListener() {
 
         btnClick = (Button) findViewById(R.id.btnClick);
@@ -463,7 +471,6 @@ public class TimePickerExample extends Activity {
             }
         });
     }
-
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {

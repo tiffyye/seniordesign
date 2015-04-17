@@ -107,7 +107,7 @@
 
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
-            android:clickable="false"
+            android:clickable="true"
             android:text="Play" />
 
         <Button
@@ -119,6 +119,16 @@
             android:layout_marginTop="40dp"
             android:clickable="false"
             android:text="Stop Playing" />
+
+        <Button
+            android:id="@+id/sendAudio"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="40dp"
+            android:clickable="false"
+            android:text="send Audio" />
 
 
 
