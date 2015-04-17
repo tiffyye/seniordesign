@@ -97,7 +97,7 @@
 
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
-            android:clickable="false"
+            android:clickable="true"
             android:text="Stop Recording" />
 
         <Button
@@ -117,7 +117,7 @@
 
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
-            android:clickable="false"
+            android:clickable="true"
             android:text="Stop Playing" />
 
         <Button
@@ -127,8 +127,8 @@
 
             android:layout_marginLeft="40dp"
             android:layout_marginTop="40dp"
-            android:clickable="false"
-            android:text="send Audio" />
+            android:clickable="true"
+            android:text="Send Audio" />
 
 
 

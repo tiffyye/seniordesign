@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -130,7 +131,7 @@ public class TimePickerExample extends Activity {
 
 
         startBtn = (Button) findViewById(R.id.start);
-
+        startBtn.setEnabled(true);
         startBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -141,6 +142,7 @@ public class TimePickerExample extends Activity {
         });
 
         stopBtn = (Button) findViewById(R.id.stop);
+        stopBtn.setEnabled(false);
         stopBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -151,6 +153,7 @@ public class TimePickerExample extends Activity {
         });
 
         playBtn = (Button) findViewById(R.id.play);
+        playBtn.setEnabled(false);
         playBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -161,6 +164,7 @@ public class TimePickerExample extends Activity {
         });
 
         stopPlayBtn = (Button) findViewById(R.id.stopPlay);
+        stopPlayBtn.setEnabled(false);
         stopPlayBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -171,6 +175,7 @@ public class TimePickerExample extends Activity {
         });
 
         sendAudioBtn = (Button) findViewById(R.id.sendAudio);
+        sendAudioBtn.setEnabled(false);
         stopPlayBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -232,7 +237,8 @@ public class TimePickerExample extends Activity {
 
     private void sendAudioData(){
         //NEED TO TEST
-        File audiofile = new File(getFilesDir(), "/audio.3gp");
+        File audiofile = new File(getFilesDir(), "/audio.wav");
+        byte[] AudioByteArray = null;
         byte[] finalAudioByteArray = null;
 
         if(audiofile.exists())
@@ -246,12 +252,13 @@ public class TimePickerExample extends Activity {
                   buffer.write(data, 0, bytes_read);
               }
               input_stream.close();
-              finalAudioByteArray = buffer.toByteArray();
+              AudioByteArray = buffer.toByteArray();
+              finalAudioByteArray = Arrays.copyOf(AudioByteArray, 10);
           } catch (Exception e) {
               e.printStackTrace();
           }
 
-            try {
+           /* try {
                 outStream = btSocket.getOutputStream();
             } catch (IOException e) {
                 errorExit("Fatal Error", "In sendAudioData() and output stream creation failed" + e.getMessage() + ".");
@@ -261,11 +268,16 @@ public class TimePickerExample extends Activity {
             Log.d(TAG, "...Sending audio data...");
 
             try {
+                System.out.println(Arrays.toString(finalAudioByteArray));
+                //byte[] testdata = "hahaha".getBytes();
                 outStream.write(finalAudioByteArray);
+                //outStream.write(testdata);
             } catch (IOException e) {
                 String msg = "In sendAudioData() and an exception occurred during write" + e.getMessage();
                 errorExit("Fatal Error", msg);
-            }
+            }*/
+            System.out.println(Arrays.toString(AudioByteArray));
+            sendData(AudioByteArray.toString());
 
 
         }
@@ -274,7 +286,7 @@ public class TimePickerExample extends Activity {
     }
 
     private void setUpAudio(){
-        outputFile = getFilesDir() + "/audio.3gp";
+        outputFile = getFilesDir() + "/audio.wav";
         myRecorder = new MediaRecorder();
         myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -291,6 +303,7 @@ public class TimePickerExample extends Activity {
         stopBtn.setEnabled(false);
         playBtn.setEnabled(true);
         stopPlayBtn.setEnabled(false);
+        sendAudioBtn.setEnabled(true);
 
         Toast.makeText(getApplicationContext(), "Send Audio data...",
                 Toast.LENGTH_SHORT).show();
@@ -319,6 +332,7 @@ public class TimePickerExample extends Activity {
         stopBtn.setEnabled(true);
         playBtn.setEnabled(false);
         stopPlayBtn.setEnabled(false);
+        sendAudioBtn.setEnabled(false);
 
         Toast.makeText(getApplicationContext(), "Start recording...",
                 Toast.LENGTH_SHORT).show();
@@ -336,6 +350,7 @@ public class TimePickerExample extends Activity {
             playBtn.setEnabled(true);
             startBtn.setEnabled(true);
             stopPlayBtn.setEnabled(false);
+            sendAudioBtn.setEnabled(true);
             //deleteMsgBtn.setEnabled(true);
             text.setText("Recording Point: Stop recording");
 
@@ -359,9 +374,10 @@ public class TimePickerExample extends Activity {
             stopPlayBtn.setEnabled(true);
             stopBtn.setEnabled(false);
             startBtn.setEnabled(false);
+            sendAudioBtn.setEnabled(false);
             //deleteMsgBtn.setEnabled(false);
             text.setText("Recording Point: Playing");
-
+            System.out.println("hahahahahahahaha I'm here===================");
             Toast.makeText(getApplicationContext(), "Start play the recording...",
                     Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
@@ -381,6 +397,7 @@ public class TimePickerExample extends Activity {
                 stopPlayBtn.setEnabled(false);
                 stopBtn.setEnabled(false);
                 startBtn.setEnabled(true);
+                sendAudioBtn.setEnabled(true);
 
                 text.setText("Recording Point: Stop playing");
 
