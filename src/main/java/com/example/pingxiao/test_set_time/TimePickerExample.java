@@ -175,7 +175,7 @@ public class TimePickerExample extends Activity {
         });
 
         sendAudioBtn = (Button) findViewById(R.id.sendAudio);
-        sendAudioBtn.setEnabled(false);
+        sendAudioBtn.setEnabled(true);
         stopPlayBtn.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -246,7 +246,7 @@ public class TimePickerExample extends Activity {
           try {
               InputStream input_stream = new BufferedInputStream(new FileInputStream(audiofile));
               ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-              byte[] data = new byte[1024*16]; // 16K WHAT IF WE HAVE A REALLY BIG SIZE
+              byte[] data = new byte[1024*256]; // 16K WHAT IF WE HAVE A REALLY BIG SIZE
               int bytes_read;
               while ((bytes_read = input_stream.read(data, 0, data.length)) != -1) {
                   buffer.write(data, 0, bytes_read);
